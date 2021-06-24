@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Connect Four</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="css/dragNdrop.css">
+  <style type="text/css">
+    body {
+  font-family: sans-serif;
+}
+
+#upperBoard{
+ background: black;
+}
+#element1 {
+  background: yellow;
+  height: 40px;
+  width: 40px;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+#element2 {
+  background: red;
+  
+  height: 40px;
+  width: 40px;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+#element1 .dragNdrop::before {
+  content: 'Drag';
+  display: block;
+}
+
+.dragNdrop--start::before {
+  content: 'Start';
+  display: block;
+}
+
+.dragNdrop--drag::before {
+  content: 'Drag';
+  display: block;
+}
+
+.dragNdrop--stop::before {
+  content: 'Stop';
+  display: block;
+  position: initial;
+}
+.dragNdrop--stop::after {
+  position: initial;
+}
+  </style>
+
+  <script src="js/jquery-2.1.1.min.js"></script>
+  <script src="js/vars.js"></script>
+  <script src="js/functions.js"></script>
+  <script src="js/controller.js"></script>
+  <script src="js/dragNdrop-library.js"></script>
+  <script src="https://thibaultjanbeyer.github.io/dragNdrop/dNd.min.js"></script>
+</head>
+<body id="dropzone" >
+	
+	<audio id="myAudio">
+	  	<source src="sound/chip-sound.ogg" type="audio/ogg">
+	  	<source src="sound/chip-sound.mp3" type="audio/mpeg">
+  	Your browser does not support the audio element.
+	</audio>	
+  	
+  <h1 id='callback'></h1>
+  <center>
+  <div  id="container" class="container" >
+    <div id="chipcontainer">
+      <div id="element1" class="element chip1"></div>
+      <div id="element2" class="element chip2"></div>
+    </div>
+
+  <section class="wrapper"  >
+  <div class="info">
+      <h1 class="title">Play Connect Four!</h1>
+      <h2 class="message"><span class="prefix"></span><span id="player" class="player">&nbsp;</span></h2>
+      <a href="#" class="play-again" style="display: none;">Play Again</a>
+    </div>
+
+    
+      <table class="chipboard" >
+        
+          <tr>
+            <td><button type="button" id='btn0'  ></button></td>
+            <td><button type="button" id='btn1'  ></button></td>
+            <td><button type="button" id='btn2'  ></button></td>
+            <td><button type="button" id='btn3'  ></button></td>
+            <td><button type="button" id='btn4'  ></button></td>
+            <td><button type="button" id='btn5'  ></button></td>
+            <td><button type="button" id='btn6'  ></button></td>
+          </tr>
+        
+      <table>  
+    
+    <table class="board">
+      <tbody>
+        <tr>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+        </tr>
+        <tr>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+        </tr>
+        <tr>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+        </tr>
+        <tr>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+        </tr>
+        <tr>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+        </tr>
+        <tr>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+          <td><button type="button"></button></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  </section>
+</center>  
+<script type="text/javascript">
+    // palyer1 = true ,player2 = false;
+    var player_turn='yellow';
+    itsme();
+
+    function checkplayer(playerTurn){
+        
+        // checks if player current player is yellow then makes its chip draggble by calling itsme fuction.
+        if(playerTurn=='yellow'){
+          itsme();
+        }
+        
+        // checks if player current player is red then makes its chip draggble by calling itsme2 fuction.
+        else if(playerTurn=='red'){
+          itsme2();
+        }
+    }
+    function itsme(){
+          // makes first chip draggable.
+          var dnd1 = dragNdrop({
+              // element to be dragged (DOM element)
+              element: document.getElementById('element1'),
+              constraints:'x',// drop (false / DOM element)
+              dropZones: [
+                  document.getElementById('dropzone')
+              ],
+              callback: function(event) {
+    
+                  // Trigger the game sequence by clicking on a position button on the board.
+                  // removes the chip where placed.
+    
+                  document.getElementById('element1').remove();
+                  $('body').mouseover(function(evt){
+                      $('body').off('mouseover');
+
+                      // gets the id of button in main slider buttons postions.
+                      var ele=evt.target.id;
+                      
+                      // separates the number from targeted id.
+                      var ele_array=ele.split('n');
+
+                      // checks if one of those slider button clicked
+                      if( isNaN(ele_array[1]) == true){
+                         player_turn='yellow';
+
+                         // puts back the chips at original position.
+                         document.getElementById('chipcontainer').innerHTML="<div id='element1' class='element chip1'></div><div id='element2' class='element chip2'></div>";
+                         
+                         // fuction calls itself to keep making coin gragabble.
+                         itsme();
+                      }
+                      else{
+
+                        // changes player turn to red.
+                        player_turn='red';
+
+                        // gets the x_position to be passed as parameter for dropToBottom function.
+                        var x_pos =ele_array[1]; 
+                        
+                        // assigns the bottom unfilled y postion through function for next function. 
+                        y_pos = dropToBottom(x_pos,0);
+                      
+                        // fills the space in board w.r.t got x and y postion in following function. 
+                        addDiscToBoard(currentPlayer, x_pos, y_pos);
+                        printBoard();
+                        
+                        // checks for 3 possible winning condtions. 
+                        if (verticalWin() || horizontalWin() || diagonalWin())
+                        {
+                            $('.board button').unbind('mouseup');
+                            $('.prefix').text(config.winPrefix);
+                            $('.play-again').show("slow");
+                            return;
+                        }
+                        // checks for gamedraw condition. 
+                        else if (gameIsDraw()) 
+                        {
+                            $('.board button').unbind('mouseup');
+                            $('.message').text(config.drawMsg);
+                            $('.play-again').show("slow");
+                            return;
+                        }
+                        // puts back the chips in places.
+                        document.getElementById('chipcontainer').innerHTML="<div id='element1' class='element chip1'></div><div id='element2' class='element chip2'></div>";
+                        
+                        // changes player turn again for next iteration.
+                        changePlayer();
+                        checkplayer(player_turn);
+                      }
+                      
+                        
+                        
+                      
+                     
+
+                  });
+              }
+          });
+      }
+
+          
+
+    function itsme2(){
+        // // makes second chip draggable.
+        var dnd2 = dragNdrop({
+              // element to be dragged (DOM element)
+              element: document.getElementById('element2'),
+              constraints:'x',// drop (false / DOM element)
+              dropZones: [
+                  document.getElementById('dropzone')
+              ],
+              callback: function(event) {
+                  
+                  // Trigger the game sequence by clicking on a position button on the board.
+                  // removes the chip where placed.    
+                  
+                  document.getElementById('element2').remove();
+                  $('body').mouseover(function(evt){
+                    
+                    $('body').off('mouseover');
+
+                    // gets the id of button in main slider buttons postions.
+                    var ele=evt.target.id;
+                    
+                    // separates the number from targeted id.
+                    var ele_array=ele.split('n');
+                    
+                    // checks if one of those slider button clicked
+                    if( isNaN(ele_array[1]) == true){
+                         player_turn='red';
+
+                         // puts back the chips at original position.
+                         document.getElementById('chipcontainer').innerHTML="<div id='element1' class='element chip1'></div><div id='element2' class='element chip2'></div>";
+                         
+                         // fuction calls itself to keep making coin gragabble.
+                         itsme2();
+                      }
+                      else{
+                        // changes player turn to yellow.
+                        player_turn='yellow';
+
+                        // gets the x_position to be passed as parameter for dropToBottom function.
+                        var x_pos =ele_array[1];
+
+                        // assigns the bottom unfilled y postion through function for next function 
+                        y_pos = dropToBottom(x_pos,0);
+                      
+                        // fills the space in board w.r.t got x and y postion in following function.
+                        addDiscToBoard(currentPlayer, x_pos, y_pos);
+                        printBoard();
+                        
+                        // checks for 3 possible winning condtions.
+                        if (verticalWin() || horizontalWin() || diagonalWin())
+                        {
+                            $('.board button').unbind('mouseup');
+                            $('.prefix').text(config.winPrefix);
+                            $('.play-again').show("slow");
+                            return;
+                        }
+                        // puts back the chips in places. 
+                        else if (gameIsDraw()) 
+                        {
+                            $('.board button').unbind('mouseup');
+                            $('.message').text(config.drawMsg);
+                            $('.play-again').show("slow");
+                            return;
+                        }
+                        // puts back the chips in places.
+                        document.getElementById('chipcontainer').innerHTML="<div id='element1' class='element chip1'></div><div id='element2' class='element chip2'></div>";
+                        
+                        // changes player turn again for next iteration.
+                        changePlayer();
+                        checkplayer(player_turn);
+                      }
+                    
+                  });
+                 
+              }
+        });
+
+    }
+    var chip_sound = document.getElementById("myAudio"); 
+
+		function playAudio() { 
+    	chip_sound.play(); 
+	}  
+
+
+      
+    
+</script>  
+</body>
+</html>
